@@ -40,7 +40,7 @@ export default function HomeSidebar() {
             </div>
 
             <div className="flex flex-col mt-3">
-                <p className="flex gap-2 items-center font-semibold"><TrendingUp className="text-blue-500" /> Top posts this week</p>
+                <p className="flex gap-2 items-center font-semibold"><TrendingUp className="text-blue-500" /> Top trends this week</p>
                 <div className="h-30 border mt-3 rounded-lg bg-black/5 dark:bg-white/5 dark:shadow-white dark:hover:shadow-xs cursor-pointer transition-all duration-300 hover:shadow-sm overflow-clip">
                     <img src="/kohli2.jpg" alt="" className="h-full w-full object-cover object-top"/>
                 </div>
