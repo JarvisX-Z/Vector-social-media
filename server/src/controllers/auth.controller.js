@@ -3,33 +3,33 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export const register = async (req, res) => {
-    const {name, surname, phoneNumber, email, password} = req.body;
-    if(!name) {
+    const { name, surname, phoneNumber, email, password } = req.body;
+    if (!name) {
         return res.json(400).json({
             success: false,
             message: "Please enter your name!"
         })
     }
-    if(!phoneNumber) {
+    if (!phoneNumber) {
         return res.status(400).json({
             success: false,
             message: "Please enter your phone number!"
         })
     }
-    if(!email) {
+    if (!email) {
         return res.status(400).json({
             success: false,
             message: "Please enter your email!"
         })
     }
-    if(!password) {
+    if (!password) {
         return res.status(400).json({
             success: false,
             message: "Please enter a password!"
         })
     }
     try {
-        const existingUser = await User.findOne({email});
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({
                 success: false,
@@ -37,7 +37,7 @@ export const register = async (req, res) => {
             })
         }
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await User.create({name, surname, phoneNumber, email, password: hashedPassword, signupstep: 1, isProfileComplete: false});
+        const user = await User.create({ name, surname, phoneNumber, email, password: hashedPassword, signupstep: 1, isProfileComplete: false });
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
         res.cookie("token", token, {
             httpOnly: true,
@@ -57,21 +57,21 @@ export const register = async (req, res) => {
     }
 }
 
-export const profileSetup = async(req, res) => {
-    const {username, bio, description} = req.body;
-    if(!username) {
+export const profileSetup = async (req, res) => {
+    const { username, bio, description } = req.body;
+    if (!username) {
         return res.json(400).json({
             success: false,
             message: "Please enter a username!"
         })
     }
-    if(!bio) {
+    if (!bio) {
         return res.json(400).json({
             success: false,
             message: "Please enter a bio!"
         })
     }
-    if(!description) {
+    if (!description) {
         return res.json(400).json({
             success: false,
             message: "Please enter a description!"
@@ -79,7 +79,7 @@ export const profileSetup = async(req, res) => {
     }
     try {
         const user = await User.findById(req.user.id)
-        if(!user) {
+        if (!user) {
             return res.status(404).json({
                 success: false,
                 message: "User not found!"
@@ -88,13 +88,95 @@ export const profileSetup = async(req, res) => {
         user.username = username;
         user.bio = bio;
         user.description = description;
+        user.isProfileComplete = true;
+        user.signupStep = 2;
         await user.save();
         return res.status(200).json({
             success: false,
             message: "Profile completed successfully!"
         })
-    } catch(error) {
+    } catch (error) {
         return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+export const getMe = (req, res) => {
+    return res.status(200).json({
+        success: true,
+        user: {
+            id: req.user._id,
+            email: req.user.email,
+            username: req.user.username,
+            isProfileComplete: req.user.isProfileComplete,
+            signupStep: req.user.signupStep,
+        },
+    });
+};
+
+export const login = async (req, res) => {
+    const { username, password } = req.body;
+    if (!username) {
+        return res.status(400).json({
+            success: false,
+            message: "Enter your username!"
+        })
+    }
+    if (!password) {
+        return res.status(400).json({
+            success: false,
+            message: "Enter your password!"
+        })
+    }
+    try {
+        const user = await User.findOne({ username }).select("+password");
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found!"
+            })
+        }
+        const matched = await bcrypt.compare(password, user.password)
+        if(!matched) {
+            return res.status(400).json({
+                success: false,
+                message: "Incorrect password!"
+            })
+        }
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' })
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
+        return res.status(200).json({
+            success: true,
+            message: "Logged In successfully"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+export const logout = async(req, res) => {
+    try {
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict'
+        })
+        return res.status(200).json({
+            success: true,
+            message: "Logged out successfully"
+        })
+    } catch (error) {
+        return res.status(400).json({
             success: false,
             message: error.message
         })
