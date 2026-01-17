@@ -1,29 +1,42 @@
 import User from "../models/User.js"
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import validator from 'validator';
 
 export const register = async (req, res) => {
     const { name, surname, phoneNumber, email, password } = req.body;
     if (!name) {
-        return res.json(400).json({
+        return res.json({
             success: false,
             message: "Please enter your name!"
         })
     }
-    if (!phoneNumber) {
-        return res.status(400).json({
-            success: false,
-            message: "Please enter your phone number!"
-        })
-    }
     if (!email) {
-        return res.status(400).json({
+        return res.json({
             success: false,
             message: "Please enter your email!"
         })
     }
+    if(!validator.isEmail(email)) {
+        return res.json({
+            success: false,
+            message: "Please enter a valid email!"
+        })
+    }
+    if (!phoneNumber) {
+        return res.json({
+            success: false,
+            message: "Please enter your phone number!"
+        })
+    }
+    if(!validator.isMobilePhone(phoneNumber, "any")) {
+        return res.json({
+            success: false,
+            message: "Please enter a valid phone number!"
+        })
+    }
     if (!password) {
-        return res.status(400).json({
+        return res.json({
             success: false,
             message: "Please enter a password!"
         })
@@ -31,7 +44,7 @@ export const register = async (req, res) => {
     try {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({
+            return res.json({
                 success: false,
                 message: "User already exists!"
             })
@@ -60,19 +73,19 @@ export const register = async (req, res) => {
 export const profileSetup = async (req, res) => {
     const { username, bio, description } = req.body;
     if (!username) {
-        return res.json(400).json({
+        return res.json({
             success: false,
             message: "Please enter a username!"
         })
     }
     if (!bio) {
-        return res.json(400).json({
+        return res.json({
             success: false,
             message: "Please enter a bio!"
         })
     }
     if (!description) {
-        return res.json(400).json({
+        return res.json({
             success: false,
             message: "Please enter a description!"
         })
@@ -80,10 +93,16 @@ export const profileSetup = async (req, res) => {
     try {
         const user = await User.findById(req.user.id)
         if (!user) {
-            return res.status(404).json({
+            return res.json({
                 success: false,
                 message: "User not found!"
             })
+        }
+        if (user.isProfileComplete) {
+            return res.json({
+                success: false,
+                message: "Profile already completed!",
+            });
         }
         user.username = username;
         user.bio = bio;
@@ -92,7 +111,7 @@ export const profileSetup = async (req, res) => {
         user.signupStep = 2;
         await user.save();
         return res.status(200).json({
-            success: false,
+            success: true,
             message: "Profile completed successfully!"
         })
     } catch (error) {
@@ -104,28 +123,40 @@ export const profileSetup = async (req, res) => {
 }
 
 export const getMe = (req, res) => {
-    return res.status(200).json({
-        success: true,
-        user: {
-            id: req.user._id,
-            email: req.user.email,
-            username: req.user.username,
-            isProfileComplete: req.user.isProfileComplete,
-            signupStep: req.user.signupStep,
-        },
-    });
+  const user = req.user;
+  return res.status(200).json({
+    success: true,
+    user: {
+      id: user._id,
+      name: user.name,
+      surname: user.surname,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      username: user.username,
+      bio: user.bio,
+      description: user.description,
+      isProfileComplete: user.isProfileComplete,
+      signupStep: user.signupStep,
+    },
+  });
 };
 
 export const login = async (req, res) => {
+    if (req.cookies.token) {
+        return res.status(400).json({
+            success: false,
+            message: "Already logged in",
+        });
+    }
     const { username, password } = req.body;
     if (!username) {
-        return res.status(400).json({
+        return res.json({
             success: false,
             message: "Enter your username!"
         })
     }
     if (!password) {
-        return res.status(400).json({
+        return res.json({
             success: false,
             message: "Enter your password!"
         })
@@ -133,14 +164,14 @@ export const login = async (req, res) => {
     try {
         const user = await User.findOne({ username }).select("+password");
         if (!user) {
-            return res.status(404).json({
+            return res.json({
                 success: false,
                 message: "User not found!"
             })
         }
         const matched = await bcrypt.compare(password, user.password)
-        if(!matched) {
-            return res.status(400).json({
+        if (!matched) {
+            return res.json({
                 success: false,
                 message: "Incorrect password!"
             })
@@ -164,7 +195,7 @@ export const login = async (req, res) => {
     }
 }
 
-export const logout = async(req, res) => {
+export const logout = async (req, res) => {
     try {
         res.clearCookie('token', {
             httpOnly: true,

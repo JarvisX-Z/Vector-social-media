@@ -2,25 +2,36 @@
 
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { toast } from "react-toastify";
 import axios from "axios";
+import {useAppContext} from "@/context/AppContext";
 
 export default function LoginForm() {
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const {isLoggedIn, setIsLoggedIn, refreshAuth} = useAppContext();
 
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
 
     const handleLogin = async(e: React.FormEvent) => {
         e.preventDefault();
         try {
+            setLoading(true);
             const {data} = await axios.post(BACKEND_URL + '/api/auth/login', {username, password}, {withCredentials: true})
             if(data.success) {
                 toast.success("Logged in successfully!");
+                setIsLoggedIn(true);
+                await refreshAuth();
+                router.replace("/main")
+                return;
+            } else {
+                toast.warn(data.message)
             }
         } catch (error: unknown) {
             if (error instanceof Error) {
@@ -28,6 +39,8 @@ export default function LoginForm() {
             } else {
                 toast.error("Something went wrong");
             }
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -48,8 +61,8 @@ export default function LoginForm() {
             </div>
 
             <p className="text-[0.9rem] mt-1.5">Forgot your password? <span className="text-blue-800 underline cursor-pointer ml-5">Click here</span> </p>
-            <Button className="w-full mt-5 cursor-pointer bg-blue-500 hover:bg-blue-600" onClick={handleLogin}>
-                Log in
+            <Button disabled={loading} className={`w-full mt-5 cursor-pointer ${loading ? "bg-blue-400" : "bg-blue-500 hover:bg-blue-600"}`} onClick={handleLogin}>
+                {loading ? "Logging in" : "Log in"}
             </Button>
             <p className="text-[0.9rem] mt-3">Don't have an account? <span className="font-semibold ml-6 underline cursor-pointer" onClick={() => router.push('/auth/register')}>Register</span></p>
         </div>

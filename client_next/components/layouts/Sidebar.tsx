@@ -3,21 +3,14 @@
 import { useState, ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import {
-    Home,
-    Search,
-    Bell,
-    User,
-    Plus,
-    Menu,
-    X,
-    Settings,
-    LogOut,
-} from "lucide-react";
+import {Home, Search, Bell, User, Plus, Menu, X, Settings, LogOut,} from "lucide-react";
 import Themetoggle from "@/app/theme-toggle";
-import CreateModal from "./CreateModal";
+import CreateModal from "../modals/CreateModal";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useAppContext } from "@/context/AppContext";
+import LogoutWarning from "../modals/LogoutWarning";
+import { useRouter } from "next/navigation";
 
 interface SidebarItemProps {
     icon: ReactNode;
@@ -32,13 +25,23 @@ export default function Sidebar(): JSX.Element {
     const [createOpen, setCreateOpen] = useState<boolean>(false);
     const pathname = usePathname();
 
+    const router = useRouter();
+
+    const [logoutOpen, setLogoutOpen] = useState(false);
+
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
+
+    const { isLoggedIn, setIsLoggedIn, setUserData, userData } = useAppContext();
 
     const handleLogout = async () => {
         try {
             const { data } = await axios.post(BACKEND_URL + '/api/auth/logout')
-            if(data.success) {
+            if (data.success) {
                 toast.success("Logged out successfully!");
+                setIsLoggedIn(false);
+                setUserData(null);
+                router.replace('/auth/login')
+                return;
             }
         } catch (error: unknown) {
             if (error instanceof Error) {
@@ -64,7 +67,7 @@ export default function Sidebar(): JSX.Element {
                     <div className="h-14 md:h-18 w-14 md:w-18 border border-black/10 rounded-full bg-gray-50 dark:bg-white/20"></div>
                     <div className="flex flex-col justify-center ml-3">
                         <p className="font-semibold text-[1.1rem]">Hello</p>
-                        <p className="text-[0.9rem] font-light opacity-50">Random user</p>
+                        <p className="text-[0.9rem] font-light opacity-50">{userData?.name}</p>
                     </div>
                 </div>
 
@@ -83,10 +86,13 @@ export default function Sidebar(): JSX.Element {
                 <SidebarItem icon={<Settings className="h-5 md:h-7" />} label="Settings" href="/main/settings" active={pathname === "/main/settings"} />
 
                 <p className="flex mr-auto pl-2 md:pl-7 gap-2 mt-auto transition-all duration-300 hover:bg-gray-200 dark:hover:bg-white/10 w-full h-10 rounded-lg items-center cursor-pointer dark:hover:text-white/70"
-                    onClick={handleLogout}>
-                    <LogOut className="opacity-60" />Log out
+                    onClick={() => setLogoutOpen(true)}>
+                    <LogOut className="opacity-60" /> {isLoggedIn ? "Log out" : "Log in"}
                 </p>
+
             </aside>
+
+            {logoutOpen && (<LogoutWarning onClose={() => setLogoutOpen(false)} onConfirm={handleLogout}/>)}
 
             {createOpen && <CreateModal onClose={() => setCreateOpen(false)} />}
         </>
