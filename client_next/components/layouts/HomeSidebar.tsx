@@ -6,9 +6,20 @@ export default function HomeSidebar() {
     return (
         <div className="hidden md:flex bg-white dark:bg-black border-black/5 w-90 h-screen flex-col py-7 px-3 font-serif">
 
-            <p className="text-[1.1rem] font-semibold flex items-center gap-2"> <UserPlus className="h-5 text-blue-500" /> People you can follow</p>
+            <div className="flex flex-col border-b pb-5">
+                <p className="flex gap-2 items-center font-semibold"><TrendingUp className="text-blue-500" /> Top trends this week</p>
+                <div className="h-30 border mt-3 rounded-lg bg-black/5 dark:bg-white/5 dark:shadow-white dark:hover:shadow-xs cursor-pointer transition-all duration-300 hover:shadow-sm overflow-clip">
+                    <img src="/kohli2.jpg" alt="" className="h-full w-full object-cover object-top"/>
+                </div>
+                <div className="h-30 border my-3 rounded-lg bg-black/5 dark:bg-white/5 dark:shadow-white dark:hover:shadow-xs cursor-pointer transition-all duration-300 hover:shadow-sm overflow-clip">
+                    <img src="/cse.jpg" alt="" className="h-full w-full object-cover"/>
+                </div>
+                <Button className="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white">See more</Button>
+            </div>
 
-            <div className="mt-5 flex flex-col gap-5 border-b pb-6">
+            <p className="text-[1.1rem] font-semibold flex items-center gap-2 mt-3"> <UserPlus className="h-5 text-blue-500" /> People you can follow</p>
+
+            <div className="mt-5 flex flex-col gap-5">
                 <div className="box flex items-center gap-2">
                     <div className="h-12 w-12 rounded-full bg-black/5 dark:bg-white/5 overflow-hidden">
                         <img src="/Jensen.png" alt="" className="h-full w-full object-contain" />
@@ -36,17 +47,6 @@ export default function HomeSidebar() {
                 </div>
 
                 <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer text-white">See more</Button>
-            </div>
-
-            <div className="flex flex-col mt-3">
-                <p className="flex gap-2 items-center font-semibold"><TrendingUp className="text-blue-500" /> Top trends this week</p>
-                <div className="h-30 border mt-3 rounded-lg bg-black/5 dark:bg-white/5 dark:shadow-white dark:hover:shadow-xs cursor-pointer transition-all duration-300 hover:shadow-sm overflow-clip">
-                    <img src="/kohli2.jpg" alt="" className="h-full w-full object-cover object-top"/>
-                </div>
-                <div className="h-30 border my-3 rounded-lg bg-black/5 dark:bg-white/5 dark:shadow-white dark:hover:shadow-xs cursor-pointer transition-all duration-300 hover:shadow-sm overflow-clip">
-                    <img src="/cse.jpg" alt="" className="h-full w-full object-cover"/>
-                </div>
-                <Button className="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white">See more</Button>
             </div>
         </div>
     );

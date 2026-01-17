@@ -33,7 +33,7 @@ export default function LogoutWarning({
         className={`bg-white border border-white/20 dark:bg-black rounded-xl p-6 w-[90%] max-w-sm transition-all duration-200 ${visible ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Confirm logout</h2>
-          <button onClick={handleClose}>
+          <button onClick={handleClose} className="cursor-pointer">
             <X className="h-5 w-5" />
           </button>
         </div>
