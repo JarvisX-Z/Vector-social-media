@@ -18,7 +18,7 @@ export default function CreateModal({ onClose }: { onClose: () => void }) {
 
     return (
         <>
-            <div onClick={handleClose} className={`fixed inset-0 z-50 bg-black/40 dark:bg-white/5 transition-opacity duration-200 ${visible ? "opacity-100" : "opacity-0"}`} />
+            <div onClick={handleClose} className={`fixed inset-0 z-60 bg-black/40 dark:bg-white/5 transition-opacity duration-200 ${visible ? "opacity-100" : "opacity-0"}`} />
 
             <div className={`fixed z-60 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] md:w-[40vw] bg-white dark:bg-black border dark:border-white/20 rounded-lg shadow-xl p-6 transition-all duration-200 ${visible ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}>
                 <div className="flex justify-between items-center mb-4">
