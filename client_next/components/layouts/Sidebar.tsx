@@ -3,7 +3,7 @@
 import { useState, ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import {Home, Search, Bell, User, Plus, Menu, X, Settings, LogOut,} from "lucide-react";
+import { Home, Search, Bell, User, Plus, Menu, X, Settings, LogOut, } from "lucide-react";
 import Themetoggle from "@/app/theme-toggle";
 import CreateModal from "../modals/CreateModal";
 import { toast } from "react-toastify";
@@ -31,7 +31,7 @@ export default function Sidebar(): JSX.Element {
 
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
 
-    const { isLoggedIn, setIsLoggedIn, setUserData, userData } = useAppContext();
+    const { isLoggedIn, setIsLoggedIn, setUserData, userData, setPosts } = useAppContext();
 
     const handleLogout = async () => {
         try {
@@ -92,9 +92,17 @@ export default function Sidebar(): JSX.Element {
 
             </aside>
 
-            {logoutOpen && (<LogoutWarning onClose={() => setLogoutOpen(false)} onConfirm={handleLogout}/>)}
+            {logoutOpen && (<LogoutWarning onClose={() => setLogoutOpen(false)} onConfirm={handleLogout} />)}
 
-            {createOpen && <CreateModal onClose={() => setCreateOpen(false)} />}
+            {createOpen && (
+                <CreateModal onClose={() => setCreateOpen(false)} 
+                onPostCreated={(post) => {
+                        if (!post || !post._id) return;
+                        setPosts(prev => [post, ...prev]);
+                    }}/>
+            )}
+
+
         </>
     );
 }

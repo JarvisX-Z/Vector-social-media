@@ -3,11 +3,25 @@
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
+import { toast } from "react-toastify";
+import axios from "axios";
 
-export default function CreateModal({ onClose }: { onClose: () => void }) {
+type CreateModalProps = {
+    onClose: () => void;
+    onPostCreated: (post: any) => void;
+};
+
+export default function CreateModal({
+    onClose,
+    onPostCreated
+}: CreateModalProps) {
     const [visible, setVisible] = useState(false);
 
     const [intent, setIntent] = useState("");
+    const [content, setContent] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
 
     useEffect(() => {
         setVisible(true);
@@ -17,6 +31,32 @@ export default function CreateModal({ onClose }: { onClose: () => void }) {
         setVisible(false);
         setTimeout(onClose, 200);
     };
+
+    const handlePost = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            setLoading(true);
+            const { data } = await axios.post(
+                BACKEND_URL + "/api/posts",
+                { content, intent },
+                { withCredentials: true }
+            );
+            if (!data.success || !data.post) {
+                toast.error("Failed to post");
+                return;
+            } else {
+                toast.success("Posted!")
+            }
+            onPostCreated(data.post);
+            handleClose();
+        } catch (error) {
+            console.error(error);
+            toast.error("Something went wrong");
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     return (
         <>
@@ -42,11 +82,16 @@ export default function CreateModal({ onClose }: { onClose: () => void }) {
                     </select>
                 </div>
 
-                <textarea placeholder="What's on your mind?" className="w-full h-32 resize-none border border-black/10 dark:border-white/20 rounded-lg p-3 outline-none dark:bg-black" />
+                <textarea placeholder="What's on your mind?" value={content} onChange={(e) => setContent(e.target.value)} className="w-full h-32 resize-none border border-black/10 dark:border-white/20 rounded-lg p-3 outline-none dark:bg-black" />
 
                 <div className="flex justify-between gap-3 mt-4">
-                    <Button className="bg-black/70 dark:bg-white dark:hover:bg-white/70 cursor-pointer w-[47%]">Discard</Button>
-                    <Button className="bg-blue-500 cursor-pointer hover:bg-blue-600 w-[47%]">Post</Button>
+                    <Button onClick={handleClose} className="bg-black/70 dark:bg-white dark:hover:bg-white/70 cursor-pointer w-[47%]">
+                        Discard
+                    </Button>
+
+                    <Button disabled={loading || !intent || !content.trim()} onClick={handlePost} className={`cursor-pointer w-[47%] ${loading ? "bg-blue-400" : "bg-blue-500 hover:bg-blue-600"}`}>
+                        {loading ? "Posting..." : "Post"}
+                    </Button>
                 </div>
             </div>
         </>

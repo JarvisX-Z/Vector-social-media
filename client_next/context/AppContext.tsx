@@ -24,6 +24,7 @@ export type User = {
   signupStep?: number;
 };
 
+export type Post = any;
 
 type AppContextType = {
   isLoggedIn: boolean;
@@ -32,20 +33,21 @@ type AppContextType = {
   userData: User | null;
   setUserData: React.Dispatch<React.SetStateAction<User | null>>;
 
+  // ✅ POSTS (NEW)
+  posts: Post[];
+  setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
+
   loading: boolean;
   refreshAuth: () => Promise<void>;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export function AppContextProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export function AppContextProvider({ children }: { children: ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [userData, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -55,8 +57,11 @@ export function AppContextProvider({
       setUserData(null);
       return;
     }
+
     try {
-      const { data } = await axios.get<{ user: User }>(BACKEND_URL + '/api/auth/me');
+      const { data } = await axios.get<{ user: User }>(
+        BACKEND_URL + "/api/auth/me"
+      );
       setIsLoggedIn(true);
       setUserData(data.user);
     } catch {
@@ -64,6 +69,7 @@ export function AppContextProvider({
       setUserData(null);
     }
   };
+
   useEffect(() => {
     refreshAuth().finally(() => setLoading(false));
   }, []);
@@ -75,6 +81,9 @@ export function AppContextProvider({
         setIsLoggedIn,
         userData,
         setUserData,
+        posts,
+        setPosts,
+
         loading,
         refreshAuth,
       }}
@@ -88,9 +97,7 @@ export function useAppContext(): AppContextType {
   const context = useContext(AppContext);
 
   if (!context) {
-    throw new Error(
-      "useAppContext must be used within AppContextProvider"
-    );
+    throw new Error("useAppContext must be used within AppContextProvider");
   }
 
   return context;
