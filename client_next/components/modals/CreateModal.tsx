@@ -7,6 +7,8 @@ import { Button } from "../ui/button";
 export default function CreateModal({ onClose }: { onClose: () => void }) {
     const [visible, setVisible] = useState(false);
 
+    const [intent, setIntent] = useState("");
+
     useEffect(() => {
         setVisible(true);
     }, []);
@@ -21,11 +23,23 @@ export default function CreateModal({ onClose }: { onClose: () => void }) {
             <div onClick={handleClose} className={`fixed inset-0 z-60 bg-black/40 dark:bg-white/5 transition-opacity duration-200 ${visible ? "opacity-100" : "opacity-0"}`} />
 
             <div className={`fixed z-60 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] md:w-[40vw] bg-white dark:bg-black border dark:border-white/20 rounded-lg shadow-xl p-6 transition-all duration-200 ${visible ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}>
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex justify-between items-center">
                     <p className="text-[1.2rem] font-semibold">Create a post</p>
                     <button onClick={handleClose} className="cursor-pointer">
                         <X />
                     </button>
+                </div>
+
+                <div className="mt-5 mb-3 flex items-center gap-3">
+                    <p>Select your intent :</p>
+                    <select value={intent} onChange={(e) => setIntent(e.target.value)} className="border border-black/20 dark:border-white/30 cursor-pointer px-5 rounded-md py-1 bg-white dark:bg-black outline-none">
+                        <option value="" disabled>Choose</option>
+                        <option value="ask">Ask</option>
+                        <option value="build">Build</option>
+                        <option value="share">Share</option>
+                        <option value="discuss">Discuss</option>
+                        <option value="reflect">Reflect</option>
+                    </select>
                 </div>
 
                 <textarea placeholder="What's on your mind?" className="w-full h-32 resize-none border border-black/10 dark:border-white/20 rounded-lg p-3 outline-none dark:bg-black" />
