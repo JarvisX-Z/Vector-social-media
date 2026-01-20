@@ -78,7 +78,7 @@ export default function CreateModal({onClose,onPostCreated}: CreateModalProps) {
                 <textarea placeholder="What's on your mind?" value={content} onChange={(e) => setContent(e.target.value)} className="w-full h-32 resize-none border border-black/10 dark:border-white/20 rounded-lg p-3 outline-none dark:bg-black" />
 
                 <div className="flex justify-between gap-3 mt-4">
-                    <Button onClick={handleClose} className="bg-black/70 dark:bg-white dark:hover:bg-white/70 cursor-pointer w-[47%]">
+                    <Button variant="outline" onClick={handleClose} className="cursor-pointer w-[47%]">
                         Discard
                     </Button>
 
