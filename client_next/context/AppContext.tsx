@@ -1,13 +1,7 @@
 "use client";
 
 import axios from "axios";
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
+import {createContext, useContext, useEffect, useState, ReactNode} from "react";
 
 axios.defaults.withCredentials = true;
 
@@ -33,7 +27,6 @@ type AppContextType = {
   userData: User | null;
   setUserData: React.Dispatch<React.SetStateAction<User | null>>;
 
-  // ✅ POSTS (NEW)
   posts: Post[];
   setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
 
@@ -57,11 +50,8 @@ export function AppContextProvider({ children }: { children: ReactNode }) {
       setUserData(null);
       return;
     }
-
     try {
-      const { data } = await axios.get<{ user: User }>(
-        BACKEND_URL + "/api/auth/me"
-      );
+      const { data } = await axios.get<{ user: User }>(BACKEND_URL + "/api/auth/me");
       setIsLoggedIn(true);
       setUserData(data.user);
     } catch {
@@ -83,7 +73,6 @@ export function AppContextProvider({ children }: { children: ReactNode }) {
         setUserData,
         posts,
         setPosts,
-
         loading,
         refreshAuth,
       }}
