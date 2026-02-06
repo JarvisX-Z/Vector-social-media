@@ -28,6 +28,11 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
 
+    avatar: {
+      type: String,
+      default: ""
+    },
+
     email: {
       type: String,
       required: true,

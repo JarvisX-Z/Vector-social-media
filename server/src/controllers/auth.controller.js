@@ -17,7 +17,7 @@ export const register = async (req, res) => {
             message: "Please enter your email!"
         })
     }
-    if(!validator.isEmail(email)) {
+    if (!validator.isEmail(email)) {
         return res.json({
             success: false,
             message: "Please enter a valid email!"
@@ -29,7 +29,7 @@ export const register = async (req, res) => {
             message: "Please enter your phone number!"
         })
     }
-    if(!validator.isMobilePhone(phoneNumber, "any")) {
+    if (!validator.isMobilePhone(phoneNumber, "any")) {
         return res.json({
             success: false,
             message: "Please enter a valid phone number!"
@@ -123,22 +123,23 @@ export const profileSetup = async (req, res) => {
 }
 
 export const getMe = (req, res) => {
-  const user = req.user;
-  return res.status(200).json({
-    success: true,
-    user: {
-      id: user._id,
-      name: user.name,
-      surname: user.surname,
-      email: user.email,
-      phoneNumber: user.phoneNumber,
-      username: user.username,
-      bio: user.bio,
-      description: user.description,
-      isProfileComplete: user.isProfileComplete,
-      signupStep: user.signupStep,
-    },
-  });
+    const user = req.user;
+    return res.status(200).json({
+        success: true,
+        user: {
+            id: user._id,
+            name: user.name,
+            surname: user.surname,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            username: user.username,
+            bio: user.bio,
+            description: user.description,
+            avatar: user.avatar,
+            isProfileComplete: user.isProfileComplete,
+            signupStep: user.signupStep,
+        },
+    });
 };
 
 export const login = async (req, res) => {
