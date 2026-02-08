@@ -54,6 +54,15 @@ export default function RegistrationForm() {
             <p className="font-semibold text-[1rem] md:text-[1.2rem]">Welcome to Vector!</p>
             <p className="mt-2 mb-5 text-[0.9rem] md:text-[1rem] text-gray-500">Register to start posting right away!</p>
 
+            <button className="border w-full rounded-md h-10 flex items-center justify-center gap-2 my-3 cursor-pointer" onClick={() => {window.location.href =`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/google`;}}>
+                <img src="/Google.png" alt="" className="h-5"/>
+                Continue with Google
+            </button>
+            <div className="relative flex items-center justify-center my-3">
+                <div className="absolute inset-x-0 h-px bg-black/20 mt-1"></div>
+                <p className="relative bg-white px-2 text-sm text-gray-600">or</p>
+            </div>
+
             <div className="flex gap-5">
                 <div>
                     <p className="font-semibold">First Name</p>

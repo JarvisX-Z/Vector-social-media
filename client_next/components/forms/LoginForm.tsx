@@ -6,7 +6,7 @@ import { useContext, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { toast } from "react-toastify";
 import axios from "axios";
-import {useAppContext} from "@/context/AppContext";
+import { useAppContext } from "@/context/AppContext";
 
 export default function LoginForm() {
     const router = useRouter();
@@ -15,16 +15,16 @@ export default function LoginForm() {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const {isLoggedIn, setIsLoggedIn, refreshAuth} = useAppContext();
+    const { isLoggedIn, setIsLoggedIn, refreshAuth } = useAppContext();
 
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
 
-    const handleLogin = async(e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             setLoading(true);
-            const {data} = await axios.post(BACKEND_URL + '/api/auth/login', {username, password}, {withCredentials: true})
-            if(data.success) {
+            const { data } = await axios.post(BACKEND_URL + '/api/auth/login', { username, password }, { withCredentials: true })
+            if (data.success) {
                 toast.success("Logged in successfully!");
                 setIsLoggedIn(true);
                 await refreshAuth();
@@ -45,9 +45,17 @@ export default function LoginForm() {
     }
 
     return (
-        <div className="border border-black/10 dark:border-white/10 rounded-lg px-10 py-5">
+        <div className="border border-black/10 dark:border-white/10 rounded-lg px-10 py-5 w-90">
             <p className="font-semibold text-[1rem] md:text-[1.2rem]">Welcome back!</p>
             <p className="mt-2 mb-5 text-[0.9rem] md:text-[1.1rem]">Log in to get right back in!</p>
+            <button className="border w-full rounded-md h-10 flex items-center justify-center gap-2 my-3 cursor-pointer" onClick={() => {window.location.href =`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/google`;}}>
+                <img src="/Google.png" alt="" className="h-5"/>
+                Continue with Google
+            </button>
+            <div className="relative flex items-center justify-center mt-5">
+                <div className="absolute inset-x-0 h-px bg-black/20 mt-1"></div>
+                <p className="relative bg-white px-2 text-sm text-gray-600">or</p>
+            </div>
             <p className="font-semibold">Username</p>
             <input type="text" placeholder="demousername09" className="outline-none h-10 bg-black/5 border dark:border-white/10 w-full rounded-md p-3 my-3"
                 onChange={(e) => setUsername(e.target.value)} />
@@ -59,12 +67,14 @@ export default function LoginForm() {
                     {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                 </span>
             </div>
-
-            <p className="text-[0.9rem] mt-1.5">Forgot your password? <span className="text-blue-800 underline cursor-pointer ml-5">Click here</span> </p>
+            <p className="text-[0.9rem]">Forgot your password? <span className="text-blue-800 underline cursor-pointer ml-5">Click here</span> </p>
             <Button disabled={loading} className={`w-full mt-5 cursor-pointer ${loading ? "bg-blue-400" : "bg-blue-500 hover:bg-blue-600"}`} onClick={handleLogin}>
                 {loading ? "Logging in" : "Log in"}
             </Button>
-            <p className="text-[0.9rem] mt-3">Don't have an account? <span className="font-semibold ml-6 underline cursor-pointer" onClick={() => router.push('/auth/register')}>Register</span></p>
+            <div className="flex items-center justify-between mt-3">
+                <p className="text-[0.9rem] mt-3">Don't have an account?</p>
+                <span className=" font-semibold underline cursor-pointer mt-1" onClick={() => router.push('/auth/register')}>Register</span>
+            </div>
         </div>
     );
 }
