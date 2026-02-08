@@ -1,8 +1,10 @@
 "use client";
 
 import { useAppContext } from "@/context/AppContext";
-import { Bookmark, Heart, MessageCircle, Repeat, HelpCircle, Hammer, Share2, MessagesSquare, MoreHorizontal, Trash2 } from "lucide-react";
+import axios from "axios";
+import { Bookmark, Heart, MessageCircle, Repeat, HelpCircle, Hammer, Share2, MessagesSquare, MoreHorizontal, Trash2, Flag } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 type PostCardProps = {
     post: any;
@@ -17,6 +19,11 @@ const intentIconMap: Record<string, any> = {
 };
 
 export default function PostCard({ post }: PostCardProps) {
+
+    const { userData, posts, setPosts } = useAppContext();
+    const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
+
+    const isOwner = userData?.id === post.author._id;
 
     const [liked, setLiked] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -44,6 +51,22 @@ export default function PostCard({ post }: PostCardProps) {
             year: "2-digit",
         });
     }
+
+    const handleDelete = async () => {
+        try {
+            await axios.delete(
+                `${BACKEND_URL}/api/posts/${post._id}`,
+                { withCredentials: true }
+            );
+            setPosts(prevPosts =>
+                prevPosts.filter(p => p._id !== post._id)
+            );
+            setMenuOpen(false);
+            toast.success("Post deleted");
+        } catch (err) {
+            toast.error("Failed to delete post");
+        }
+    };
 
 
     useEffect(() => {
@@ -97,14 +120,22 @@ export default function PostCard({ post }: PostCardProps) {
 
                     {menuOpen && (
                         <div className="absolute overflow-clip top-0 right-0 w-30 bg-white dark:bg-black border border-black/10 dark:border-white/20 rounded-md shadow-lg z-50">
-                            <button className="w-full cursor-pointer flex items-center gap-2 px-3 py-2 text-sm text-red-500 transition-all duration-300 hover:bg-black/3 dark:hover:bg-white/5" onClick={() => { setMenuOpen(false) }}>
-                                <Trash2 size={14} />
-                                Delete post
-                            </button>
-                            <button className="w-full cursor-pointer flex items-center gap-2 px-3 py-2 text-sm text-blue-500 transition-all duration-300 hover:bg-black/3 dark:hover:bg-white/5" onClick={() => { setMenuOpen(false) }}>
+                            <button className="w-full cursor-pointer flex items-center gap-2 px-3 py-2 text-sm text-blue-500 transition-all duration-300 hover:bg-black/3 dark:hover:bg-white/5" onClick={() => setMenuOpen(false)}>
                                 <Share2 size={14} />
                                 Share post
                             </button>
+                            {isOwner && (
+                                <button className="w-full cursor-pointer flex items-center gap-2 px-3 py-2 text-sm text-red-500 transition-all duration-300 hover:bg-black/3 dark:hover:bg-white/5" onClick={handleDelete}>
+                                    <Trash2 size={14} />
+                                    Delete post
+                                </button>
+                            )}
+                            {!isOwner && (
+                                <button className="w-full cursor-pointer flex items-center gap-2 px-3 py-2 text-sm text-red-500 transition-all duration-300 hover:bg-black/3 dark:hover:bg-white/5" onClick={() => { setMenuOpen(false); }}>
+                                    <Flag size={14} />
+                                    Report post
+                                </button>
+                            )}
                         </div>
                     )}
                 </div>
