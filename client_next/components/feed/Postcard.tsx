@@ -27,8 +27,7 @@ export default function PostCard({ post }: PostCardProps) {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
     const isOwner = userData?.id === post.author._id;
-
-    const [liked, setLiked] = useState(false);
+    const isLiked = post.likes.includes(userData?.id);
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
 
@@ -54,6 +53,15 @@ export default function PostCard({ post }: PostCardProps) {
             year: "2-digit",
         });
     }
+
+    const handleLike = async () => {
+        try {
+            setPosts(prev => prev.map(p => p._id === post._id ? {...p, likes: isLiked ? p.likes.filter((id: string | undefined) => id !== userData?.id) : [...p.likes, userData?.id],} : p));
+            await axios.put(`${BACKEND_URL}/api/posts/${post._id}/like`,{}, { withCredentials: true });
+        } catch {
+            toast.error("Failed to like post");
+        }
+    };
 
     const handleDelete = async () => {
         try {
@@ -167,10 +175,11 @@ export default function PostCard({ post }: PostCardProps) {
                     <p className="flex gap-1 items-center">
                         <Repeat size={20} className="hover:text-blue-500" />0
                     </p>
-                    <p className="flex gap-1 items-center" onClick={() => setLiked(prev => !prev)}>
-                        <Heart size={20} className={`cursor-pointer hover:text-blue-500 ${liked ? "text-blue-500" : ""}`} fill={liked ? "currentColor" : "none"} />
-                        0
+                    <p className="flex gap-1 items-center" onClick={handleLike}>
+                        <Heart size={20} className={`cursor-pointer hover:text-blue-500 ${isLiked ? "text-blue-500" : ""}`} fill={isLiked ? "currentColor" : "none"} />
+                        {post.likes.length}
                     </p>
+
                 </div>
                 <div>
                     <p className="text-[0.85rem]">{timeAgo(post.createdAt)}</p>
