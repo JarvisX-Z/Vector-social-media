@@ -94,3 +94,42 @@ export const updateProfile = async (req, res) => {
         });
     }
 };
+
+export const toggleFollowUser = async (req, res) => {
+    try {
+        const currentUserId = req.user.id;
+        const targetUserId = req.params.id;
+        if (currentUserId === targetUserId) {
+            return res.status(400).json({
+                message: "You cannot follow yourself"
+            });
+        }
+        const currentUser = await User.findById(currentUserId);
+        const targetUser = await User.findById(targetUserId);
+        if (!targetUser) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+        const isFollowing = currentUser.following.includes(targetUserId);
+        if (isFollowing) {
+            await User.findByIdAndUpdate(currentUserId, { $pull: { following: targetUserId }, $inc: { followingCount: -1 } });
+            await User.findByIdAndUpdate(targetUserId, { $pull: { followers: currentUserId }, $inc: { followersCount: -1 } });
+            return res.json({
+                followed: false
+            });
+        } else {
+            await User.findByIdAndUpdate(currentUserId, { $addToSet: { following: targetUserId }, $inc: { followingCount: 1 } });
+            await User.findByIdAndUpdate(targetUserId, { $addToSet: { followers: currentUserId }, $inc: { followersCount: 1 }, });
+            return res.json({
+                followed: true
+            });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            message: "Server error"
+        });
+    }
+};
