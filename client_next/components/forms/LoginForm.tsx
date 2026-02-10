@@ -49,7 +49,7 @@ export default function LoginForm() {
     }
 
     return (
-        <div className="border border-black/10 dark:border-white/10 rounded-lg px-10 py-5 w-90">
+        <div className="border border-black/10 dark:border-white/10 rounded-lg px-10 py-5 w-80 md:w-90">
             <p className="font-semibold text-[1rem] md:text-[1.2rem]">Welcome back!</p>
             <p className="mt-2 mb-5 text-[0.9rem] md:text-[1.1rem] text-gray-600">Log in to get right back in!</p>
             <button className="border w-full rounded-md h-10 flex items-center justify-center gap-2 my-3 cursor-pointer" onClick={() => { window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/google`; }}>
@@ -71,7 +71,10 @@ export default function LoginForm() {
                     {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                 </span>
             </div>
-            <p className="text-[0.9rem]">Forgot your password? <span className="text-blue-800 underline cursor-pointer ml-5">Click here</span> </p>
+            <div className="flex items-center justify-between">
+                <p className="text-[0.9rem]">Forgot your password?</p>
+                <span className="text-blue-800 underline cursor-pointer">Click here</span>
+            </div>
             <Button disabled={loading} className={`w-full mt-5 cursor-pointer ${loading ? "bg-blue-400" : "bg-blue-500 hover:bg-blue-600"}`} onClick={handleLogin}>
                 {loading ? "Logging in" : "Log in"}
             </Button>

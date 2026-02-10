@@ -58,7 +58,7 @@ export default function RegistrationForm() {
     }
 
     return (
-        <div className="border border-black/10 dark:border-white/10 rounded-lg px-10 py-5">
+        <div className="border border-black/10 dark:border-white/10 rounded-lg px-5 md:px-10 py-5 w-80 md:w-fit">
             <p className="font-semibold text-[1rem] md:text-[1.2rem]">Welcome to Vector!</p>
             <p className="mt-2 mb-5 text-[0.9rem] md:text-[1rem] text-gray-500">Register to start posting right away!</p>
 
@@ -71,28 +71,28 @@ export default function RegistrationForm() {
                 <p className="relative bg-white dark:bg-[oklch(0.145_0_0)] px-2 text-sm text-gray-600">or</p>
             </div>
 
-            <div className="flex gap-5">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-5">
                 <div>
                     <p className="font-semibold">First Name</p>
-                    <input type="text" placeholder="demo" className="outline-none h-10 bg-black/3 border dark:border-white/10 w-50 rounded-md p-3 my-2 text-[0.95rem]"
+                    <input type="text" placeholder="demo" className="outline-none h-10 bg-black/3 border dark:border-white/10 w-full rounded-md p-3 my-2 text-[0.95rem]"
                         onChange={(e) => setName(e.target.value)} />
                 </div>
                 <div>
                     <p className="font-semibold">Last Name</p>
-                    <input type="text" placeholder="user" className="outline-none h-10 bg-black/3 border dark:border-white/10 w-50 rounded-md p-3 my-2 text-[0.95rem]"
+                    <input type="text" placeholder="user" className="outline-none h-10 bg-black/3 border dark:border-white/10 w-full rounded-md p-3 my-2 text-[0.95rem]"
                         onChange={(e) => setSurname(e.target.value)} />
                 </div>
             </div>
 
-            <div className="flex gap-5">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-5">
                 <div>
                     <p className="font-semibold">Email</p>
-                    <input type="email" placeholder="demo@gmail.com" className="outline-none h-10 bg-black/3 border dark:border-white/10 w-50 rounded-md p-3 my-2 text-[0.95rem]"
+                    <input type="email" placeholder="demo@gmail.com" className="outline-none h-10 bg-black/3 border dark:border-white/10 w-full rounded-md p-3 my-2 text-[0.95rem]"
                         onChange={(e) => setEmail(e.target.value)} />
                 </div>
                 <div>
                     <p className="font-semibold">Phone number</p>
-                    <input type="tel" placeholder="+00 00000 00000" className="outline-none h-10 bg-black/3 border dark:border-white/10 w-50 rounded-md p-3 my-2 text-[0.95rem]"
+                    <input type="tel" placeholder="+00 00000 00000" className="outline-none h-10 bg-black/3 border dark:border-white/10 w-full rounded-md p-3 my-2 text-[0.95rem]"
                         onChange={(e) => setPhone(e.target.value)} />
                 </div>
             </div>
