@@ -2,10 +2,11 @@
 
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useAppContext } from "@/context/AppContext";
 
 export default function RegistrationForm() {
     const router = useRouter();
@@ -21,18 +22,25 @@ export default function RegistrationForm() {
 
     const [loading, setLoading] = useState(false);
 
+    const {isLoggedIn} = useAppContext();
+    useEffect(() => {
+        if (isLoggedIn) {
+            router.replace("/main");
+        }
+    }, [isLoggedIn]);
+
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
-        if(password!==confirmPassword) {
+        if (password !== confirmPassword) {
             toast.warn("Passwords do not match!");
             return;
         }
         try {
             setLoading(true)
-            const {data} = await axios.post(BACKEND_URL + '/api/auth/register', {name, surname, email, phoneNumber, password}, {withCredentials: true})
-            if(data.success) {
+            const { data } = await axios.post(BACKEND_URL + '/api/auth/register', { name, surname, email, phoneNumber, password }, { withCredentials: true })
+            if (data.success) {
                 toast.success("Account created successfully!")
                 router.replace('/auth/profile')
             } else {
@@ -54,8 +62,8 @@ export default function RegistrationForm() {
             <p className="font-semibold text-[1rem] md:text-[1.2rem]">Welcome to Vector!</p>
             <p className="mt-2 mb-5 text-[0.9rem] md:text-[1rem] text-gray-500">Register to start posting right away!</p>
 
-            <button className="border w-full rounded-md h-10 flex items-center justify-center gap-2 my-3 cursor-pointer" onClick={() => {window.location.href =`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/google`;}}>
-                <img src="/Google.png" alt="" className="h-5"/>
+            <button className="border w-full rounded-md h-10 flex items-center justify-center gap-2 my-3 cursor-pointer" onClick={() => { window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/google`; }}>
+                <img src="/Google.png" alt="" className="h-5" />
                 Continue with Google
             </button>
             <div className="relative flex items-center justify-center mt-5 mb-2">
@@ -101,7 +109,7 @@ export default function RegistrationForm() {
             <p className="font-semibold">Confirm your password</p>
             <div className="relative">
                 <input type={showConfirmPassword ? "text" : "password"} placeholder="Confirm your password" className="outline-none h-10 bg-black/3 border dark:border-white/10 w-full rounded-md p-3 my-2 text-[0.95rem] pr-10"
-                onChange={(e) => setConfirmPassword(e.target.value)}/>
+                    onChange={(e) => setConfirmPassword(e.target.value)} />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-black/50" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
                     {showConfirmPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                 </span>
