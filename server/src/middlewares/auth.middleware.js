@@ -7,7 +7,7 @@ const authMiddleware = async (req, res, next) => {
         if (!token) {
             return res.status(401).json({
                 success: false,
-                message: "Unauthorized. Token missing.",
+                message: "Unauthorized. Token missing!",
             });
         }
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -15,7 +15,7 @@ const authMiddleware = async (req, res, next) => {
         if (!user) {
             return res.status(401).json({
                 success: false,
-                message: "Unauthorized. User not found.",
+                message: "Unauthorized. User not found!",
             });
         }
         req.user = user;
@@ -23,7 +23,7 @@ const authMiddleware = async (req, res, next) => {
     } catch (error) {
         return res.status(401).json({
             success: false,
-            message: "Invalid or expired token.",
+            message: "Invalid or expired token!",
         });
     }
 };

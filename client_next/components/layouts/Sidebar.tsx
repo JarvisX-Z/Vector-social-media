@@ -29,8 +29,7 @@ export default function Sidebar() {
 
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
 
-  const { isLoggedIn, setIsLoggedIn, setUserData, userData, setPosts } =
-    useAppContext();
+  const { isLoggedIn, setIsLoggedIn, setUserData, userData, setPosts } = useAppContext();
 
   useEffect(() => {
     setOpen(false);
