@@ -67,7 +67,7 @@ export const updateProfile = async (req, res) => {
         if (bio !== undefined) {
             user.bio = bio;
         }
-        if(bio.length>30) {
+        if (bio.length > 30) {
             return res.json({
                 message: "Bio length exceeds word limit!"
             })
@@ -174,5 +174,24 @@ export const getFollowing = async (req, res) => {
         res.status(200).json(user.following);
     } catch (err) {
         res.status(500).json({ message: err.message });
+    }
+};
+
+export const getAllUsers = async (req, res) => {
+    try {
+        const page = Number(req.query.page) || 1;
+        const limit = 10;
+        const skip = (page - 1) * limit;
+        const users = await User.find().select("-password").limit(limit).skip(skip);
+        res.status(200).json({
+            success: true,
+            users
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch users",
+            error: error.message
+        });
     }
 };
