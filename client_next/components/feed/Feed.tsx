@@ -18,7 +18,7 @@ export default function Feed() {
     }, []);
 
     return (
-        <div className="hide-scrollbar w-full px-5 md:px-10 pt-14 md:pt-0 pb-10">
+        <div className="hide-scrollbar w-full px-5 md:px-10 pb-10">
             <PostList posts={posts} />
         </div>
     );
