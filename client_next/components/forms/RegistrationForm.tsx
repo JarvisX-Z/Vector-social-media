@@ -45,13 +45,7 @@ export default function RegistrationForm() {
 
     try {
       setLoading(true);
-
-      const { data } = await axios.post(
-        BACKEND_URL + "/api/auth/register",
-        { name, surname, email, phoneNumber, password },
-        { withCredentials: true }
-      );
-
+      const { data } = await axios.post( BACKEND_URL + "/api/auth/register", { name, surname, email, phoneNumber, password }, { withCredentials: true });
       if (data.success) {
         await refreshAuth();
         toast.success("Account created successfully!");

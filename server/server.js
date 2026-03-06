@@ -15,7 +15,7 @@ import { Server } from "socket.io";
 
 const app = express();
 
-connectDB();
+await connectDB();
 
 app.use(cors({
   origin: ["http://localhost:3000", "http://vector-lac.vercel.app", "https://vector-lac.vercel.app", process.env.FRONTEND_URL],
