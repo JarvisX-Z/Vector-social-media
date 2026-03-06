@@ -132,6 +132,19 @@ export default function ProfileSettings() {
     }
   };
 
+  const handleCancel = () => {
+    setFormData(initialData);
+
+    setEditable({
+      username: false,
+      name: false,
+      surname: false,
+      phoneNumber: false,
+      bio: false,
+      description: false,
+    });
+  };
+
   return (
     <div className="h-screen px-5 md:px-20 py-5 md:pt-5 overflow-y-auto">
       <h1 className="text-xl md:text-2xl mb-3 font-semibold text-white text-center md:text-left">Edit Profile</h1>
@@ -152,7 +165,6 @@ export default function ProfileSettings() {
         <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
       </div>
 
-      {/* Fields */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-5 text-white">
         <EditableInput
           label="Username"
@@ -209,9 +221,8 @@ export default function ProfileSettings() {
         />
       </div>
 
-      {/* Actions */}
       <div className="flex justify-end gap-4 mt-7">
-        <button className="w-40 py-2 bg-blue-600 text-white cursor-pointer rounded-lg">Cancel</button>
+        <button className="w-40 py-2 bg-blue-600 text-white cursor-pointer rounded-lg"onClick={handleCancel}>Cancel</button>
         <button disabled={loading || !isFormChanged} onClick={handleSave} className={`w-40 py-2 text-white rounded-lg ${isFormChanged ? 'bg-blue-600 cursor-pointer' : 'cursor-not-allowed bg-blue-400'} ${loading ? 'cursor-not-allowed bg-blue-400' : ''}`}>
           {loading ? 'Saving..' : 'Save changes'}
         </button>
@@ -220,7 +231,6 @@ export default function ProfileSettings() {
   );
 }
 
-/* ---------- Reusable Inputs ---------- */
 
 function EditableInput({
   label,
@@ -233,7 +243,7 @@ function EditableInput({
   return (
     <div>
       <div className="flex justify-between mb-1">
-        <label className="font-medium">{label}</label>
+        <label className="font-medium text-shadow-lg">{label}</label>
         {!editable && (
           <button onClick={onEdit} className="text-white text-shadow-lg text-sm cursor-pointer">
             Edit
@@ -245,7 +255,7 @@ function EditableInput({
         value={value}
         disabled={!editable}
         onChange={onChange}
-        className={`w-full px-3 py-2 rounded-lg text-white/80 ${editable ? "border-blue-500 outline-2 outline-white" : "bg-black/10 backdrop-blur-3xl dark:bg-white/5 cursor-not-allowed"
+        className={`w-full px-3 py-2 rounded-lg text-white/80 ${editable ? "border-blue-500 outline-2 outline-white bg-black/10" : "bg-black/15 backdrop-blur-3xl cursor-not-allowed"
           }`}
       />
     </div>
@@ -263,7 +273,7 @@ function EditableTextarea({
   return (
     <div className="md:col-span-2">
       <div className="flex justify-between mb-1">
-        <label className="font-medium">{label}</label>
+        <label className="font-medium text-shadow-lg">{label}</label>
         {!editable && (
           <button onClick={onEdit} className="text-blue-600 text-sm cursor-pointer">
             Edit
@@ -276,7 +286,7 @@ function EditableTextarea({
         disabled={!editable}
         onChange={onChange}
         rows={3}
-        className={`w-full px-3 py-2 rounded-lg text-white/80 ${editable ? "border-blue-500 outline-2 outline-white" : "bg-black/10 backdrop-blur-3xl cursor-not-allowed"
+        className={`w-full px-3 py-2 rounded-lg text-white/80 ${editable ? "border-blue-500 outline-2 outline-white bg-black/10" : "bg-black/15 backdrop-blur-3xl cursor-not-allowed"
           }`}
       />
     </div>

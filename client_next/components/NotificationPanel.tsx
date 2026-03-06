@@ -9,7 +9,7 @@ import { Trash, Trash2 } from "lucide-react";
 
 type Notification = {
   _id: string;
-  type: "follow" | "like" | "comment";
+  type: "follow" | "like" | "comment" | "message";
   sender: {
     _id: string;
     username: string;
@@ -187,6 +187,8 @@ export default function NotificationPanel() {
                       "liked your post"}
                     {n.type === "comment" &&
                       "commented on your post"}
+                    {n.type === "message" &&
+                      "messaged you"}
                   </p>
 
                   <p className="text-xs text-gray-500 mt-1">
