@@ -160,13 +160,7 @@ export default function NotificationPanel({ search = "" }: Props) {
 
   const filteredNotifications = notifications.filter((n) => {
     const query = search.toLowerCase();
-
-    const searchable = `
-      ${n.sender.name}
-      ${n.sender.username}
-      ${typeText[n.type]}
-    `.toLowerCase();
-
+    const searchable = `${n.sender.name} ${n.sender.username} ${typeText[n.type]}`.toLowerCase();
     return searchable.includes(query);
   });
 
@@ -180,19 +174,13 @@ export default function NotificationPanel({ search = "" }: Props) {
 
         <div className="flex gap-2">
           {selectMode && selected.length > 0 && (
-            <button
-              onClick={deleteSelected}
-              className="h-9 text-sm w-35 cursor-pointer bg-blue-600 text-white rounded-md"
-            >
+            <button onClick={deleteSelected} className="h-9 text-sm w-35 cursor-pointer bg-blue-600 text-white rounded-md">
               Delete Selected
             </button>
           )}
 
           {notifications.length > 0 && (
-            <button
-              onClick={deleteAll}
-              className="h-9 text-sm cursor-pointer w-[50%] md:w-25 py-1 bg-blue-600 text-white rounded-md"
-            >
+            <button onClick={deleteAll} className="h-9 text-sm cursor-pointer w-[50%] md:w-25 py-1 bg-blue-600 text-white rounded-md">
               Clear All
             </button>
           )}
@@ -203,8 +191,7 @@ export default function NotificationPanel({ search = "" }: Props) {
                 setSelectMode((prev) => !prev);
                 setSelected([]);
               }}
-              className="h-9 text-sm cursor-pointer w-[50%] md:w-25 rounded-md bg-blue-600 text-white"
-            >
+              className="h-9 text-sm cursor-pointer w-[50%] md:w-25 rounded-md bg-blue-600 text-white">
               {selectMode ? "Cancel" : "Select"}
             </button>
           )}
@@ -222,16 +209,12 @@ export default function NotificationPanel({ search = "" }: Props) {
       ) : (
         <div className="flex flex-col gap-2">
           {filteredNotifications.map((n) => (
-            <div
-              key={n._id}
+            <div key={n._id}
               className={`flex items-center gap-3 p-4 rounded-xl transition ${
                 !n.isRead ? "backdrop-blur-lg" : "backdrop-blur-3xl"
-              }`}
-            >
+              }`}>
               {selectMode && (
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 cursor-pointer"
+                <input type="checkbox" className="h-4 w-4 cursor-pointer"
                   checked={selected.includes(n._id)}
                   onChange={() =>
                     setSelected((prev) =>
@@ -253,12 +236,8 @@ export default function NotificationPanel({ search = "" }: Props) {
                     }
                   }
                 }}
-                className="flex gap-3 flex-1 cursor-pointer p-2 rounded-lg"
-              >
-                <img
-                  src={n.sender.avatar || "/default-avatar.png"}
-                  className="h-10 w-10 rounded-full object-cover"
-                />
+                className="flex gap-3 flex-1 cursor-pointer p-2 rounded-lg">
+                <img src={n.sender.avatar || "/default-avatar.png"} className="h-10 w-10 rounded-full object-cover"/>
 
                 <div>
                   <p className="text-white">
