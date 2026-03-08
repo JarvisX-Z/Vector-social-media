@@ -87,52 +87,68 @@ export default function CommentsSection({ postId }: { postId: string }) {
             )}
 
             <div className="flex flex-col">
-                {comments.length == 0 && (
-                    <p className="text-[0.9rem text-gray-500 py-3">
-                        No comments yet!
-                    </p>
-                )}
+  {comments.length === 0 && (
+    <p className="text-[0.9rem] text-gray-500 py-3">
+      No comments yet!
+    </p>
+  )}
 
-                {comments.map((c) => {
-                    const isOwner =
-                        String(c.author?._id) === String(userData?.id);
+  {comments.map((c) => {
+    const isOwner =
+      String(c.author?._id) === String(userData?.id);
 
-                    return (
-                        <div key={c._id} className="flex gap-2 py-3 px-2 rounded-lg">
-                            <img src={c.author?.avatar || "/default-avatar.png"} className="h-7 md:h-9 w-7 md:w-9 object-cover rounded-full" />
-                            <div className="flex items-center gap-3 w-full">
-                                <div className="flex w-full md:w-fit items-center">
-                                    <p className="text-[0.9rem] font-semibold transition-all duration-200 text-white cursor-pointer" onClick={() => router.push(`/main/user/${c.author?.username}`)}>
-                                        {c.author?.name}
-                                    </p>
-                                    <p className="text-[0.9rem] text-gray-300 ml-3">
-                                        {c?.content}
-                                    </p>
-                                    <div className="flex items-center gap-2 ml-auto">
-                                        <p className="md:hidden text-[0.8rem] text-gray-500 ml-auto">
-                                            {timeAgo(c.createdAt)}
-                                        </p>
-                                    </div>
-                                </div>
-                                <p className="text-[0.8rem] hidden md:flex text-gray-500 ml-auto">
-                                    {timeAgo(c.createdAt)}
-                                </p>
+    return (
+      <div
+        key={c._id}
+        className="flex gap-3 py-3 px-2 rounded-lg"
+      >
+        {/* Avatar */}
+        <img
+          src={c.author?.avatar || "/default-avatar.png"}
+          className="h-8 w-8 md:h-9 md:w-9 object-cover rounded-full flex-shrink-0"
+        />
 
-                                {isOwner && (
-                                    <Trash2
-                                        size={18}
-                                        className="text-white/70 cursor-pointer"
-                                        onClick={() => {
-                                            setSelectedComment(c);
-                                            setShowDeleteModal(true);
-                                        }}
-                                    />
-                                )}
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
+        {/* Comment content */}
+        <div className="flex flex-col w-full">
+
+          {/* Top row (name + delete) */}
+          <div className="flex items-center gap-2">
+            <p
+              className="text-[0.9rem] font-semibold text-white cursor-pointer"
+              onClick={() =>
+                router.push(`/main/user/${c.author?.username}`)
+              }
+            >
+              {c.author?.name}
+            </p>
+
+            {isOwner && (
+              <Trash2
+                size={16}
+                className="text-white/70 cursor-pointer ml-auto"
+                onClick={() => {
+                  setSelectedComment(c);
+                  setShowDeleteModal(true);
+                }}
+              />
+            )}
+          </div>
+
+          {/* Comment text */}
+          <p className="text-[0.9rem] text-gray-300 break-words">
+            {c?.content}
+          </p>
+
+          {/* Timestamp */}
+          <p className="text-[0.75rem] text-gray-500 mt-1">
+            {timeAgo(c.createdAt)}
+          </p>
+
+        </div>
+      </div>
+    );
+  })}
+</div>
 
             <DeleteWarning
                 open={showDeleteModal}

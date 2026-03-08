@@ -103,7 +103,7 @@ export default function ChatPage({ params }: { params: Promise<Params> }) {
   return (
     <div className="flex flex-col h-screen">
 
-      <div className="bg-white/15 px-5 py-2 flex items-center">
+      <div className="bg-white/15 px-14 md:px-5 py-2 flex items-center">
         <img src={otherUser?.avatar || "/default-avatar.png"} className="h-12 w-12 rounded-full object-cover border" />
         <p onClick={() => router.push(`/main/user/${otherUser?.username}`)} className="ml-3 cursor-pointer font-semibold text-white text-[1.1rem]">
           {otherUser?.name || "User"}
