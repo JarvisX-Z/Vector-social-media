@@ -77,3 +77,25 @@ export const sendMessage = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const deleteMessage = async (req, res) => {
+  try {
+    const message = await Message.findById(req.params.messageId);
+    if (!message) {
+      return res.status(404).json({ message: "Message not found" });
+    }
+    if (message.sender.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not allowed" });
+    }
+    await message.deleteOne();
+    const io = getIO();
+    io.emit("message_deleted", {
+      messageId: message._id,
+      conversationId: message.conversation,
+    });
+    res.json({ success: true });
+  } catch (error) {
+    console.error("DELETE MESSAGE ERROR:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
