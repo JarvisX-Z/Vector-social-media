@@ -101,24 +101,13 @@ The backend exposes these main route groups:
 ### Frontend (`client_next/.env.local`)
 
 ```env
-NEXT_PUBLIC_BACKEND_URL=http://localhost:5000
+
 ```
 
 ### Backend (`server/.env`)
 
 ```env
-PORT=5000
-NODE_ENV=development
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-FRONTEND_URL=http://localhost:3000
 
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-
-CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 ```
 
 ## Local Development
@@ -162,3 +151,4 @@ Frontend runs on `http://localhost:3000` and the backend runs on `http://localho
 ## Status
 
 This codebase represents a working social platform foundation with authentication, social graph features, content posting, notifications, and real-time chat. It is a strong base for continuing work on moderation, richer media support, password recovery, deployment hardening, and test coverage.
+=======
