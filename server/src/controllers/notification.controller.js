@@ -2,7 +2,15 @@ import Notification from "../models/notification.model.js";
 
 export const getNotifications = async (req, res) => {
     const notifications = await Notification.find({ recipient: req.user._id }).populate("sender", "name username avatar").populate("post").sort({ createdAt: -1 }).lean();
-    return res.json(notifications);
+    const cleaned = notifications.map((n) => {
+        if (n.type !== "message") {
+            const { conversation, ...rest } = n;
+            return rest;
+        }
+        return n;
+    });
+
+    return res.json(cleaned);
 };
 
 export const markAsRead = async (req, res) => {
