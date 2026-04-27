@@ -65,6 +65,11 @@ export type Notification = {
   };
   isRead: boolean;
   createdAt: string;
+  conversation?: {
+    _id: string;
+    participants: UserSummary[];
+    lastMessage?: string;
+  };
 };
 
 export type ProfileFormData = {
